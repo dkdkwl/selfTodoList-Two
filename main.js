@@ -14,6 +14,8 @@ let taskInput = document.querySelector(".task-input");
 let buttonAdd = document.querySelector(".button-add");
 let taskBoard = document.querySelector("#task-board");
 let tabType = document.querySelectorAll(".tab-type > div");
+let firstSort = "tab-all";
+let currentId = "";
 let taskList = [];
 let completeList = [];
 
@@ -32,32 +34,63 @@ function taskAdd(){
         isComplete : false
     }
     taskList.push(task);
-    render();
+    render(firstSort);
 }
 
-function render(){
+function render(sort){
+    
     let taskContent = "";
 
-    for(let i = 0; i < taskList.length; i++){
-        if(taskList[i].isComplete == true){
-            taskContent += `<div class="task task-done">
-                <span>${taskList[i].content}</span>
-                <div class="button-box">
-                <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
-                <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
-            </div>`
-        }else{
-            taskContent += `<div class="task">
-                <span>${taskList[i].content}</span>
-                <div class="button-box">
-                <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
-                <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
-                </div>
-            </div>`
+    console.log(sort)
+    debugger;
+    if(sort == "tab-all"){
+        console.log("전체보기")
+        for(let i = 0; i < taskList.length; i++){
+            if(taskList[i].isComplete == true){
+                taskContent += `<div class="task task-done">
+                    <span>${taskList[i].content}</span>
+                    <div class="button-box">
+                    <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>`
+            }else{
+                taskContent += `<div class="task">
+                    <span>${taskList[i].content}</span>
+                    <div class="button-box">
+                    <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>`
+            }
         }
+    }else if(sort ="tab-not-done"){
+        for(let i = 0; i < completeList.length; i++){
+            if(completeList[i].isComplete == true){
+                taskContent += `<div class="task task-done">
+                    <span>${completeList[i].content}</span>
+                    <div class="button-box">
+                    <button onClick="taskCheck('${completeList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${completeList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>`
+            }else{
+                taskContent += `<div class="task">
+                    <span>${completeList[i].content}</span>
+                    <div class="button-box">
+                    <button onClick="taskCheck('${completeList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${completeList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>`
+            }
+        }
+        
     }
+    console.log(taskContent);
     taskBoard.innerHTML = taskContent;
+
+
+    console.log(taskList)
 }
 
 function taskDelete(id){
@@ -66,7 +99,7 @@ function taskDelete(id){
             taskList.splice(i,1);
         }
     }
-    render();
+    render(currentId);
 }
 
 function taskCheck(id){
@@ -75,24 +108,24 @@ function taskCheck(id){
             taskList[i].isComplete = !taskList[i].isComplete;            
         }
     }
-    console.log(taskList);
-    render();
+    //console.log(taskList);
+    render(currentId);
 }
 
 function tabSort(e){
-    let currentId = e.currentTarget.id;
+    currentId = e.currentTarget.id;
+    completeList = [];
+
     if(currentId == "tab-all"){
-        render();
+        render(currentId);
     }else if(currentId == "tab-not-done"){
         for(let i = 0; i < taskList.length; i++){
             if(taskList[i].isComplete == true){
                 completeList.push(taskList[i])
             }
-        }
-        console.log(completeList)
-        taskList = completeList;
+        }        
     }
-    render();
+    render(currentId);
 }
 
 
