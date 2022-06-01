@@ -14,10 +14,11 @@ let taskInput = document.querySelector(".task-input");
 let buttonAdd = document.querySelector(".button-add");
 let taskBoard = document.querySelector("#task-board");
 let tabType = document.querySelectorAll(".tab-type > div");
-let firstSort = "tab-all";
-let currentId = "";
+let currentId = "tab-all";
 let taskList = [];
 let completeList = [];
+
+render(currentId)
 
 buttonAdd.addEventListener("click",taskAdd);
 for(let i = 0; i < tabType.length; i++){
@@ -25,7 +26,6 @@ for(let i = 0; i < tabType.length; i++){
         tabSort(e);
     });
 }
-
 function taskAdd(){
     let userValue = taskInput.value;
     task = {
@@ -34,15 +34,13 @@ function taskAdd(){
         isComplete : false
     }
     taskList.push(task);
-    render(firstSort);
+    render();
 }
 
 function render(sort){
-    
-    let taskContent = "";
-
     console.log(sort)
-    debugger;
+    let taskContent = "";
+    //debugger;
     if(sort == "tab-all"){
         console.log("전체보기")
         for(let i = 0; i < taskList.length; i++){
@@ -64,7 +62,8 @@ function render(sort){
                 </div>`
             }
         }
-    }else if(sort ="tab-not-done"){
+    }else if(sort =="tab-not-done"){
+        console.log("나머지만보기")
         for(let i = 0; i < completeList.length; i++){
             if(completeList[i].isComplete == true){
                 taskContent += `<div class="task task-done">
@@ -74,22 +73,31 @@ function render(sort){
                     <button onClick="taskDelete('${completeList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>
                 </div>`
+            }
+        }
+    }else if(sort == undefined ){
+        console.log("123123");
+        for(let i = 0; i < taskList.length; i++){
+            if(taskList[i].isComplete == true){
+                taskContent += `<div class="task task-done">
+                    <span>${taskList[i].content}</span>
+                    <div class="button-box">
+                    <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    </div>
+                </div>`
             }else{
                 taskContent += `<div class="task">
-                    <span>${completeList[i].content}</span>
+                    <span>${taskList[i].content}</span>
                     <div class="button-box">
-                    <button onClick="taskCheck('${completeList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
-                    <button onClick="taskDelete('${completeList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
+                    <button onClick="taskCheck('${taskList[i].id}')"><i class="fa fa-check" aria-hidden="true"></i></button>
+                    <button onClick="taskDelete('${taskList[i].id}')"><i" class="fa fa-trash" aria-hidden="true"></i></button>
                     </div>
                 </div>`
             }
         }
-        
     }
-    console.log(taskContent);
     taskBoard.innerHTML = taskContent;
-
-
     console.log(taskList)
 }
 
@@ -108,7 +116,6 @@ function taskCheck(id){
             taskList[i].isComplete = !taskList[i].isComplete;            
         }
     }
-    //console.log(taskList);
     render(currentId);
 }
 
